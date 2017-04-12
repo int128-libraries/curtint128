@@ -18,8 +18,8 @@
 #include <iostream>
 #include <iomanip>
 #include <cinttypes>
-#include <cuda.h>
 #include <cmath>
+#include <limits>
 #include <string>
 #include <vector>
 #include <iterator>
@@ -50,14 +50,35 @@ public:
                     //  Operators //
                     ////////////////
 
+#if defined(__GNUC__) || defined(__clang__)
+  uint128_t(const __int128 & a)
+  {
+    this->lo = a;
+    this->hi = a >> 64;
+  }
+  uint128_t(const unsigned __int128 & a)
+  {
+    this->lo = a;
+    this->hi = a >> 64;
+  }
+#endif
+
   template<
       typename T,
       typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type
       >
   CUDA_UINT128_API uint128_t(const T & a)
   {
-    this->lo = (uint64_t) a & (uint64_t)-1;
-    this->hi = 0;
+    // Computing this->hi using right shifts based on types we've
+    // never seen is rife with potential for error, so we just say
+    // that this is only written for up to 64-bit types.
+    static_assert(sizeof(a) <= sizeof(this->lo),
+                  "No conversion has been written for this type");
+    this->lo = a;
+    if (std::numeric_limits<T>::is_signed && a < 0)
+      this->hi = (uint64_t)-1;
+    else
+      this->hi = 0;
   }
 
   CUDA_UINT128_API static inline uint64_t u128tou64(uint128_t x){return x.lo;}
