@@ -19,8 +19,8 @@
 #include <iomanip>
 #include <limits>
 #include <cinttypes>
-#include <cuda.h>
 #include <cmath>
+#include <limits>
 #include <string>
 #include <vector>
 #include <iterator>
@@ -77,7 +77,7 @@ public:
                   "No conversion has been written for this type");
     this->lo = a;
     if (std::numeric_limits<T>::is_signed && a < 0)
-      this->hi = -1;
+      this->hi = (uint64_t)-1;
     else
       this->hi = 0;
   }
