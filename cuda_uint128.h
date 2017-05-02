@@ -65,7 +65,10 @@ public:
   }
 #endif
 
-  template<typename T>
+  template<
+      typename T,
+      typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+      >
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
@@ -109,7 +112,7 @@ public:
   #ifdef __CUDA_ARCH__
     __host__ __device__
   #endif
-    friend uint128_t operator+(uint128_t a, const T & b){return add128(a, b);}
+    uint128_t operator+(const T & b) const {return add128(*this, b);}
 
   template <typename T>
   #ifdef __CUDA_ARCH__
@@ -189,13 +192,19 @@ public:
     return *this;
   }
 
-template <typename T>
+template <
+    typename T,
+    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
   friend inline uint128_t operator>>(uint128_t a, const T & b){a >>= b; return a;}
 
-template <typename T>
+template <
+    typename T,
+    typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
@@ -214,61 +223,61 @@ template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-    friend uint128_t operator-(uint128_t a, const T & b){return sub128(a, (uint128_t)b);}
+    uint128_t operator-(const T & b) const {return sub128(*this, (uint128_t)b);}
 
   template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-    friend uint128_t operator*(uint128_t a, const T & b){return mul128(a, (uint64_t)b);}
+    uint128_t operator*(const T & b) const {return mul128(*this, (uint64_t)b);}
 
   template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-    friend T operator/(uint128_t x, const T & v){return div128to64(x, (uint64_t)v);}
+    uint64_t operator/(const T & v) const {return div128to64(*this, (uint64_t)v);}
 
   template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend T operator%(uint128_t x, const T & v)
+  T operator%(const T & v) const
   {
     uint64_t res;
-    div128to64(x, v, &res);
+    div128to64(*this, v, &res);
     return (T)res;
   }
 
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend bool operator<(uint128_t a, uint128_t b){return isLessThan(a, b);}
+  bool operator<(uint128_t b) const {return isLessThan(*this, b);}
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend bool operator>(uint128_t a, uint128_t b){return isGreaterThan(a, b);}
+  bool operator>(uint128_t b) const {return isGreaterThan(*this, b);}
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend bool operator<=(uint128_t a, uint128_t b){return isLessThanOrEqual(a, b);}
+  bool operator<=(uint128_t b){return isLessThanOrEqual(*this, b);}
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend bool operator>=(uint128_t a, uint128_t b){return isGreaterThanOrEqual(a, b);}
+  bool operator>=(uint128_t b){return isGreaterThanOrEqual(*this, b);}
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend bool operator==(uint128_t a, uint128_t b){return isEqualTo(a, b);}
+  bool operator==(uint128_t b) const {return isEqualTo(*this, b);}
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-friend bool operator!=(uint128_t a, uint128_t b){return isNotEqualTo(a, b);}
+  bool operator!=(uint128_t b) const {return isNotEqualTo(*this, b);}
 
 template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend uint128_t operator|(uint128_t a, const T & b){return bitwiseOr(a, (uint128_t)b);}
+  uint128_t operator|(const T & b) const {return bitwiseOr(*this, (uint128_t)b);}
 
 template <typename T>
 #ifdef __CUDA_ARCH__
@@ -280,7 +289,7 @@ template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend uint128_t operator&(uint128_t a, const T & b){return bitwiseAnd(a, (uint128_t)b);}
+  uint128_t operator&(const T & b) const {return bitwiseAnd(*this, (uint128_t)b);}
 
 template <typename T>
 #ifdef __CUDA_ARCH__
@@ -292,7 +301,7 @@ template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend uint128_t operator^(uint128_t a, const T & b){return bitwiseXor(a, (uint128_t)b);}
+  uint128_t operator^(const T & b) const {return bitwiseXor(*this, (uint128_t)b);}
 
 template <typename T>
 #ifdef __CUDA_ARCH__
@@ -303,7 +312,7 @@ template <typename T>
 #ifdef __CUDA_ARCH__
   __host__ __device__
 #endif
-  friend uint128_t operator~(uint128_t a){return bitwiseNot(a);}
+  uint128_t operator~() const {return bitwiseNot(*this);}
 
 
                       ////////////////////
