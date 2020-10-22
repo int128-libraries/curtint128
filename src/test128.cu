@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <math.h>
 #include <string>
-#include <cuda_runtime.h>
 #include <curand.h>
 
 #include <CUDASieve/cudasieve.hpp>
@@ -10,8 +9,8 @@
 
 #include "cuda_uint128.h"
 #include "cuda_uint128_primitives.cuh"
+#include "utils.h"
 
-uint128_t calc(char * argv);
 uint64_t * generateUniform64(uint64_t num);
 
 __global__
@@ -26,17 +25,19 @@ void div_test(uint64_t * a, volatile uint64_t * errors);
 
 int main(int argc, char * argv[])
 {
-  uint128_t x = 0;
-  if(argc == 2){
-    x = calc(argv[1]);
+  uint128_t x = (uint128_t) 1 << 120;
+
+  if(argc == 2)
+    x = string_to_u128((std::string)argv[1]);
+
+  #pragma omp parallel for
+  for(uint64_t v = 2; v < 1u << 30; v++){
+    uint64_t r;
+    uint128_t y = uint128_t::div128to128(x, v, &r);
+    uint128_t z = mul128(y, v) + r;
+
+    if(z != x) std::cout << z << std::endl;
   }
-  size_t len;
-
-  uint64_t * d_primes = CudaSieve::getDevicePrimes(0, pow(10,9), len, 0);
-
-  x = cuda128::reduce64to128(d_primes, x.lo);
-  std::cout << x << std::endl;
-
 
   // uint64_t * d64 = generateUniform64(1u<<26);
   // volatile uint64_t * h_errors, * d_errors;
@@ -145,23 +146,4 @@ void div_test(uint64_t * a, volatile uint64_t * errors)
       // }
     }
   }
-}
-
-uint128_t calc(char * argv) // for getting values bigger than the 32 bits that system() will return;
-{
-  uint128_t value;
-  size_t len = 0;
-  char * line = NULL;
-  FILE * in;
-  char cmd[256];
-
-  sprintf(cmd, "calc %s | awk {'print $1'}", argv);
-
-  in = popen(cmd, "r");
-  getline(&line, &len, in);
-  std::string s = line;
-
-  value = string_to_u128(s);
-
-  return value;
 }
