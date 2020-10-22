@@ -9,7 +9,6 @@
 
 #include "cuda_uint128.h"
 #include "cuda_uint128_primitives.cuh"
-#include "utils.h"
 
 uint64_t * generateUniform64(uint64_t num);
 

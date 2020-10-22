@@ -21,6 +21,7 @@
 #include <cinttypes>
 #include <cmath>
 #include <limits>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <iterator>
@@ -747,6 +748,13 @@ public:
     return out;
   }
 
+  static inline std::string u128_to_string(uint128_t x)
+  {
+    std::stringstream ss;
+    ss << x;
+    return ss.str();
+  }
+
 }; // class uint128_t
 
 CUDA_UINT128_API inline uint128_t mul128(uint64_t x, uint64_t y)
@@ -783,6 +791,11 @@ CUDA_UINT128_API inline uint128_t sub128(uint128_t x, uint128_t y) // x - y
 inline uint128_t string_to_u128(std::string s)
 {
   return uint128_t::string_to_u128(s);
+}
+
+inline std::string u128_to_string(const uint128_t x)
+{
+  return uint128_t::u128_to_string(x);
 }
 
 CUDA_UINT128_API inline uint64_t _isqrt(const uint128_t & x)
