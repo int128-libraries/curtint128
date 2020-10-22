@@ -37,14 +37,10 @@
 #define CUDA_UINT128_API
 #endif
 
-class uint128_t{
-public:
-#ifdef __CUDA_ARCH__ // dynamic initialization not supported in some device code
+class uint128_t {
+public :
   uint64_t lo, hi;
-#else
-  uint64_t lo = 0, hi = 0;
-#endif
-  CUDA_UINT128_API uint128_t(){};
+  CUDA_UINT128_API uint128_t() : lo(0), hi(0) { };
 
 
                     ////////////////
@@ -406,7 +402,7 @@ public:
     uint128_t res;
   #ifdef __CUDA_ARCH__
     res.lo = x * y;
-    res.hi = __mul64hi(x, y);
+    res.hi = __umul64hi(x, y);
   #elif __x86_64__
     asm( "mulq %3\n\t"
          : "=a" (res.lo), "=d" (res.hi)
@@ -427,7 +423,7 @@ public:
     uint128_t res;
   #ifdef __CUDA_ARCH__
     res.lo = x.lo * y;
-    res.hi = __mul64hi(x.lo, y);
+    res.hi = __umul64hi(x.lo, y);
     res.hi += x.hi * y;
   #elif __x86_64__
     asm( "mulq %3\n\t"
