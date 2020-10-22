@@ -38,14 +38,10 @@
 #define CUDA_UINT128_API
 #endif
 
-class uint128_t{
-public:
-#ifdef __CUDA_ARCH__ // dynamic initialization not supported in some device code
+class uint128_t {
+public :
   uint64_t lo, hi;
-#else
-  uint64_t lo = 0, hi = 0;
-#endif
-  CUDA_UINT128_API uint128_t(){};
+  CUDA_UINT128_API uint128_t() : lo(0), hi(0) { };
 
 
                     ////////////////
