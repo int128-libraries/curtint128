@@ -1,6 +1,5 @@
 #include <cstdio>
 #include <stdint.h>
-#include <iostream>
 
 #include "cuda_uint128.h"
 

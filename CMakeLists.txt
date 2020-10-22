@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.11)
 project(cudauint128)
 
 enable_language(CUDA)
+set(CMAKE_CUDA_FLAGS "--expt-extended-lambda")
+set(CMAKE_CUDA_FLAGS_DEBUG "-g -G -O0")
 
 find_package(OpenMP REQUIRED)
 
@@ -11,7 +13,7 @@ add_library(cudasieve ${SIEVE_SRCS})
 set_target_properties(cudasieve PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_include_directories(cudasieve PRIVATE ThirdParty/CUDASieve/include)
 
-add_executable(${PROJECT_NAME}_test_cuda src/test128.cu)
+add_executable(${PROJECT_NAME}_test_cuda src/test128cuda.cu)
 target_include_directories(${PROJECT_NAME}_test_cuda PRIVATE include)
 target_include_directories(${PROJECT_NAME}_test_cuda PRIVATE ThirdParty/CUDASieve/include)
 target_link_libraries(${PROJECT_NAME}_test_cuda cudasieve curand)
