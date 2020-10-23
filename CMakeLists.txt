@@ -10,11 +10,9 @@ find_package(OpenMP REQUIRED)
 
 add_executable(${PROJECT_NAME}_test_cuda src/test128cuda.cu)
 target_include_directories(${PROJECT_NAME}_test_cuda PRIVATE include)
-target_include_directories(${PROJECT_NAME}_test_cuda PRIVATE ThirdParty/CUDASieve/include)
 target_link_libraries(${PROJECT_NAME}_test_cuda)
 
 add_executable(${PROJECT_NAME}_test_cpu src/test128cpu.cpp)
 target_include_directories(${PROJECT_NAME}_test_cpu PRIVATE include)
-target_include_directories(${PROJECT_NAME}_test_cpu PRIVATE ThirdParty/CUDASieve/include)
 target_link_libraries(${PROJECT_NAME}_test_cpu OpenMP::OpenMP_CXX)
 
