@@ -8,6 +8,8 @@ set(CMAKE_CUDA_FLAGS_DEBUG "-g -G -O0")
 
 find_package(OpenMP REQUIRED)
 
+set(CMAKE_CUDA_ARCHITECTURES "native")
+
 add_executable(${PROJECT_NAME}_test_cuda src/test128cuda.cu)
 target_include_directories(${PROJECT_NAME}_test_cuda PRIVATE include)
 target_link_libraries(${PROJECT_NAME}_test_cuda)
