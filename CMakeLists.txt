@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11) # for native CUDA support
+cmake_minimum_required(VERSION 3.19 FATAL_ERROR) # for native CUDA support
 
 project(cudauint128)
 
